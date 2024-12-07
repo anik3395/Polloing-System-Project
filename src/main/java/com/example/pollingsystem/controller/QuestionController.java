@@ -1,6 +1,8 @@
 package com.example.pollingsystem.controller;
 
+import com.example.pollingsystem.dto.ApiError;
 import com.example.pollingsystem.entity.Question;
+import com.example.pollingsystem.exception.InvalidDataExceptions;
 import com.example.pollingsystem.service.AdminService;
 import com.example.pollingsystem.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ public class QuestionController {
     @PostMapping("/question/add")
     public ResponseEntity<String> addQuestionText(@RequestParam String email, @RequestBody Question question){
         if (adminService.isAdminLoggedIn(email)) {
+            question.setPostedBy(email); //New Update?????? Done by Hitting API..
             questionService.addQuestionText(question);
             return new ResponseEntity<>("Question with answer options added successfully.", HttpStatus.CREATED);
         }else {
@@ -40,5 +43,32 @@ public class QuestionController {
     @GetMapping("/question/all")
     public List<Question> getAllQuestions(){
         return questionService.getAllQuestion();
+    }
+
+
+    //New Update??????????
+    //Get All question by logged-in admin by his own email..
+//    @GetMapping("/all")
+//    public List<Question> getQuestionBySpecificAdmin(String email){
+//        return questionService.getQuestionBySpecificAdmin(email);
+//    }
+
+
+    // Endpoint to get questions with answer options by admin email
+    @GetMapping("/by-admin")
+    public ResponseEntity<List<Question>> getQuestionsByAdmin(@RequestParam String adminEmail) {
+        List<Question> questions = questionService.getQuestionsWithAnswerOptionsByAdmin(adminEmail);
+        return new ResponseEntity<>(questions, HttpStatus.OK);
+    }
+
+
+
+    //Exception Handling processing
+    @ExceptionHandler(InvalidDataExceptions.class)
+    public ResponseEntity<ApiError> handleVerifyException(InvalidDataExceptions exception) {
+        return new ResponseEntity<>(
+                new ApiError(HttpStatus.BAD_REQUEST, exception.getMessage(), List.of(exception.getMessage())),
+                HttpStatus.BAD_REQUEST
+        );
     }
 }

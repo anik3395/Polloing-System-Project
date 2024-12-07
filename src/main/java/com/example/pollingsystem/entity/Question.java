@@ -16,14 +16,17 @@ public class Question {
     @ElementCollection
     private List<String> answerOptions;
 
+    private String postedBy;
+
 
     public Question(){
 
     }
 
-    public Question(String questionText,List<String> answerOptions){
+    public Question(String questionText,List<String> answerOptions,String postedBy){
         this.questionText = questionText;
         this.answerOptions =answerOptions;
+        this.postedBy =postedBy;
     }
 
     public long getId(){
@@ -46,5 +49,13 @@ public class Question {
 
     public void setAnswerOptions(List<String> answerOptions){
         this.answerOptions=answerOptions;
+    }
+
+    public String getPostedBy() {
+        return postedBy;
+    }
+
+    public void setPostedBy(String postedBy) {
+        this.postedBy = postedBy;
     }
 }

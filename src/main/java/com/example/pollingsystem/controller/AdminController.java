@@ -1,7 +1,9 @@
 package com.example.pollingsystem.controller;
 
 
+import com.example.pollingsystem.dto.ApiError;
 import com.example.pollingsystem.entity.Admin;
+import com.example.pollingsystem.exception.InvalidDataExceptions;
 import com.example.pollingsystem.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,6 +46,16 @@ public class AdminController {
     @GetMapping("/logged-in")
     public List<String> getLoggedInAdmin(){
         return adminService.getLoggedInAdmin();
+    }
+
+
+    //Exception Handling processing
+    @ExceptionHandler(InvalidDataExceptions.class)
+    public ResponseEntity<ApiError> handleVerifyException(InvalidDataExceptions exception) {
+        return new ResponseEntity<>(
+                new ApiError(HttpStatus.BAD_REQUEST, exception.getMessage(), List.of(exception.getMessage())),
+                HttpStatus.BAD_REQUEST
+        );
     }
 
 }

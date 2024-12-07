@@ -24,7 +24,8 @@ public class AdminService {
     //1.Register Admin with email.
     public Admin registerAdmin(Admin admin) {
         if(adminRepository.existsByEmail(admin.getEmail())){
-            throw new InvalidDataExceptions("Admin with the same email already exists.");
+            throw new InvalidDataExceptions("Admin with the same email already exists." +
+                    " Please choose another Email");
         }
         return adminRepository.save(admin);
     }
@@ -54,4 +55,6 @@ public class AdminService {
     public List<String> getLoggedInAdmin() {
       return loggedInAdmins;
     }
+
+
 }
